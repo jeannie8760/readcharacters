@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Input image path
-image_path = 'character1_0.jpg'
+image_path = 'character2_0.jpg'
 
 # Load the image in grayscale
 image = cv2.imread(image_path)
@@ -22,7 +22,7 @@ img_dilated = cv2.morphologyEx(img_denoised, cv2.MORPH_CLOSE, kernel)
 # cv2.destroyAllWindows()
 
 # Output the image
-output_path='character1_1.jpg'
+output_path='character2_1.jpg'
 cv2.imwrite(output_path, img_denoised)
 
 def detect_character_boxes(image_a, min_area=0, max_area=15000):
@@ -42,7 +42,7 @@ def detect_character_boxes(image_a, min_area=0, max_area=15000):
     return boxes
 
 # Function to draw the bounding boxes on the image
-def draw_boxes(image_b, boxes, output_path_2='character1_2.jpg'):
+def draw_boxes(image_b, boxes, output_path_2='character2_2.jpg'):
     for (x, y, w, h) in boxes:
         cv2.rectangle(image_b, (x, y), (x+w, y+h), (255, 0, 0), 2)
     cv2.imwrite(output_path_2, image_b)
