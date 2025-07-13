@@ -14,11 +14,11 @@ class CharacterViewer(tk.Tk):
         super().__init__()
         self.title("Character Navigator")
         # Scale the image to fit the resolution of your display. Adjust the scale_factor based on your DPI settings
-        self.scale_factor = 0.5  
+        self.scale_factor = 0.5
         orig_image = Image.open(image_path)
         scaled_width = int(orig_image.width * self.scale_factor)
         scaled_height = int(orig_image.height * self.scale_factor)
-        self.image = orig_image.resize((scaled_width, scaled_height), Image.ANTIALIAS)
+        self.image = orig_image.resize((scaled_width, scaled_height), Image.Resampling.LANCZOS)
         self.tk_image = ImageTk.PhotoImage(self.image)
 
         self.geometry(f"{self.image.width}x{self.image.height}")
@@ -28,15 +28,15 @@ class CharacterViewer(tk.Tk):
 
         self.canvas_img = self.canvas.create_image(0, 0, anchor='nw', image=self.tk_image)
 
-       
-        
+
+
         self.boxes = sorted(boxes, key=lambda x : (int(round(x[0]/39.0))*39.0, x[1]))
 
         print(self.boxes)
 
         self.boxes = [(int(x * self.scale_factor), int(y * self.scale_factor),
                        int(w * self.scale_factor), int(h * self.scale_factor)) for (x, y, w, h) in self.boxes]
- 
+
         self.current_index = 0
         self.highlight = None
 
@@ -63,7 +63,7 @@ class CharacterViewer(tk.Tk):
         if self.current_index < len(self.boxes) - 1:
             self.current_index += 1
             self.draw_box()
-    
+
     def normalize_sort(self):
         pass
 
