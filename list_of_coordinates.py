@@ -24,7 +24,7 @@ output_path=f"./character{idx}/character{idx}_1.jpg"
 cv2.imwrite(output_path, img_denoised)
 
 # Dilate the gaps (mostly horizontally) -> contour can be easily detected
-kernel_2 = np.ones((10,30), np.uint8)
+kernel_2 = np.ones((13,30), np.uint8)
 img_dilated = cv2.morphologyEx(img_denoised, cv2.MORPH_CLOSE, kernel_2)
 
 # Show image, wait for a key press before closing the window
@@ -44,7 +44,7 @@ def detect_character_boxes(image_a, min_area=0, max_area=20000):
     for contour in filtered_contours:
         x, y, w, h = cv2.boundingRect(contour)
         # Filter small noise
-        if w > 30 and h > 30:
+        if w > 10 and h > 8:
             boxes.append([x, y, w, h])
 
     return boxes
@@ -75,7 +75,7 @@ listofcoordinates['Xi'] = ""
 listofcoordinates.at[0,'Xi'] = 1
 # If the current X value - previous X value >80, then recognize it as a new column
 for i in range(1, len(listofcoordinates)):
-    if listofcoordinates.loc[i - 1, 'X'] - listofcoordinates.loc[i, 'X'] < 100:
+    if listofcoordinates.loc[i - 1, 'X'] - listofcoordinates.loc[i, 'X'] <50:
         listofcoordinates.at[i, 'Xi'] = listofcoordinates.at[i - 1, 'Xi']
     else:
         listofcoordinates.at[i, 'Xi'] = listofcoordinates.at[i - 1, 'Xi'] + 1
