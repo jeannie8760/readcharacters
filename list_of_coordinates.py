@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 # Input image path
-idx = 10
+idx = 9
 image_path = f"./character{idx}/character{idx}_0.jpg"
 
 # Load the image in grayscale
@@ -28,9 +28,9 @@ kernel_2 = np.ones((10,30), np.uint8)
 img_dilated = cv2.morphologyEx(img_denoised, cv2.MORPH_CLOSE, kernel_2)
 
 # Show image, wait for a key press before closing the window
-cv2.imshow("Grayscaled Image", img_dilated)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.imshow("Grayscaled Image", img_dilated)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 def detect_character_boxes(image_a, min_area=0, max_area=20000):
@@ -62,15 +62,28 @@ generatedboxes = detect_character_boxes(img_dilated)
 img_boxed = draw_boxes(img_denoised, generatedboxes)
 
 # Prepare the data for Excel output
-data = []
+coordinates = []
 for i, (x, y, w, h) in enumerate(generatedboxes, start=1):
-    data.append([i, x, y, w, h])
+    coordinates.append([i, x, y, w, h])
 
 # Create a DataFrame from the data
-df = pd.DataFrame(data, columns=["No.", "X", "Y", "Width", "Height"])
+listofcoordinates = pd.DataFrame(coordinates, columns=["No.", "X", "Y", "Width", "Height"])
+
+# Arranging orders
+listofcoordinates = listofcoordinates.sort_values('X', ascending=False).reset_index(drop=True)
+listofcoordinates['Xi'] = ""
+listofcoordinates.at[0,'Xi'] = 1
+# If the current X value - previous X value >80, then recognize it as a new column
+for i in range(1, len(listofcoordinates)):
+    if listofcoordinates.loc[i - 1, 'X'] - listofcoordinates.loc[i, 'X'] < 100:
+        listofcoordinates.at[i, 'Xi'] = listofcoordinates.at[i - 1, 'Xi']
+    else:
+        listofcoordinates.at[i, 'Xi'] = listofcoordinates.at[i - 1, 'Xi'] + 1
+        
+listofcoordinates = listofcoordinates.sort_values(['Xi','Y'],ascending=[True, True]).reset_index(drop=True)
+listofcoordinates = listofcoordinates.drop('Xi', axis=1)
 
 # Save the DataFrame to Excel
 excel_output_path = f"./character{idx}/character{idx}_boxes_location.xlsx"
-df.to_excel(excel_output_path, index=False, engine="openpyxl")
-
+listofcoordinates.to_excel(excel_output_path, index=False, engine="openpyxl")
 print(f"Bounding boxes saved to {excel_output_path}")

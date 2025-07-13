@@ -27,16 +27,10 @@ class CharacterViewer(tk.Tk):
         self.canvas.pack()
 
         self.canvas_img = self.canvas.create_image(0, 0, anchor='nw', image=self.tk_image)
-
-
-
-        self.boxes = sorted(boxes, key=lambda x : (int(round(x[0]/39.0))*39.0, x[1]))
-
-        print(self.boxes)
-
+   
         self.boxes = [(int(x * self.scale_factor), int(y * self.scale_factor),
-                       int(w * self.scale_factor), int(h * self.scale_factor)) for (x, y, w, h) in self.boxes]
-
+                       int(w * self.scale_factor), int(h * self.scale_factor)) for (x, y, w, h) in boxes]
+ 
         self.current_index = 0
         self.highlight = None
 
@@ -50,7 +44,7 @@ class CharacterViewer(tk.Tk):
             self.canvas.delete(self.highlight)
         x, y, w, h = self.boxes[self.current_index]
         self.highlight = self.canvas.create_rectangle(
-            x, y, x + w, y + h,
+            x-w/4, y-h/4, x + 5*w/4, y + 5*h/4,
             outline='red', width=2
         )
 
