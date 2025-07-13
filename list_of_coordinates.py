@@ -24,7 +24,7 @@ output_path=f"./character{idx}/character{idx}_1.jpg"
 cv2.imwrite(output_path, img_denoised)
 
 # Dilate the gaps (mostly horizontally) -> contour can be easily detected
-kernel_2 = np.ones((13,30), np.uint8)
+kernel_2 = np.ones((14,30), np.uint8)
 img_dilated = cv2.morphologyEx(img_denoised, cv2.MORPH_CLOSE, kernel_2)
 
 # Show image, wait for a key press before closing the window
